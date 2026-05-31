@@ -1,7 +1,6 @@
 <template>
   <div class="dodecahedron-viewer">
     <TresCanvas window-size>
-      <OrbitControls />
       <ambient-light :intensity="1.5" />
       <directional-light :position="[5, 5, 5]" :intensity="2" />
       <mesh :geometry="geometry" :material="material" />
@@ -16,7 +15,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { TresCanvas, OrbitControls } from '@tresjs/core';
+import { TresCanvas } from '@tresjs/core';
 import { 
   BoxGeometry, 
   MeshStandardMaterial, 
