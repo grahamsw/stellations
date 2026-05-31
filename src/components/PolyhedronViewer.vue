@@ -46,8 +46,8 @@
           </TresBufferGeometry>
           <TresMeshStandardMaterial
             :color="config.coreColor"
-            :roughness="0.1"
-            :metalness="0.9"
+            :roughness="0.3"
+            :metalness="0.1"
             :transparent="true"
             :opacity="liveCoreOpacity"
             :depthWrite="false"
@@ -104,8 +104,8 @@
           </TresBufferGeometry>
           <TresMeshStandardMaterial
             :color="config.firstColor"
-            :roughness="0.15"
-            :metalness="0.85"
+            :roughness="0.3"
+            :metalness="0.1"
             :transparent="true"
             :opacity="liveFirstStellOpacity"
             :depthWrite="false"
@@ -162,8 +162,8 @@
           </TresBufferGeometry>
           <TresMeshStandardMaterial
             :color="config.secondColor"
-            :roughness="0.15"
-            :metalness="0.85"
+            :roughness="0.3"
+            :metalness="0.1"
             :transparent="true"
             :opacity="liveSecondStellOpacity"
             :depthWrite="false"
