@@ -3,7 +3,16 @@
     <!-- Premium Cybernetic Floating Header -->
     <header class="studio-header animate-fade-in">
       <h1 class="glow-title">Stellar Polyhedra</h1>
-      <p class="subtitle">Exploring the Stellations of a Regular Dodecahedron</p>
+      <div class="solid-selector-wrapper">
+        <label for="solid-select" class="selector-label">Polyhedron:</label>
+        <div class="custom-select-wrapper">
+          <select id="solid-select" v-model="currentSolid" @change="onSolidChange" class="solid-select">
+            <option value="dodecahedron">Dodecahedron</option>
+            <option value="icosahedron">Icosahedron</option>
+          </select>
+          <span class="select-arrow"></span>
+        </div>
+      </div>
     </header>
     
     <!-- Material Studio Sidebar toggle button -->
@@ -16,8 +25,8 @@
 
     <!-- 3D Canvas + Control Dock container -->
     <div class="viewport-container">
-      <DodecahedronViewer :stellation="currentStellation" :config="materialConfig" />
-      <StellationSlider :stellation="currentStellation" @stellation-change="onStellationChange" />
+      <PolyhedronViewer :stellation="currentStellation" :solid-type="currentSolid" :config="materialConfig" />
+      <StellationSlider :stellation="currentStellation" :solid-type="currentSolid" @stellation-change="onStellationChange" />
     </div>
 
     <!-- Collapsible Futuristic Material Studio Sidebar -->
@@ -45,21 +54,21 @@
         <div class="studio-section">
           <h3>Color Customization</h3>
           <div class="control-row">
-            <label>Core Pentagon Color</label>
+            <label>Core Face Color</label>
             <div class="color-picker-wrapper">
               <input type="color" v-model="materialConfig.coreColor" />
               <span class="color-hex">{{ materialConfig.coreColor }}</span>
             </div>
           </div>
           <div class="control-row">
-            <label>1st Stellation Star Color</label>
+            <label>1st Stellation Face Color</label>
             <div class="color-picker-wrapper">
               <input type="color" v-model="materialConfig.firstColor" />
               <span class="color-hex">{{ materialConfig.firstColor }}</span>
             </div>
           </div>
           <div class="control-row">
-            <label>2nd Stellation Valley Color</label>
+            <label>2nd Stellation Face Color</label>
             <div class="color-picker-wrapper">
               <input type="color" v-model="materialConfig.secondColor" />
               <span class="color-hex">{{ materialConfig.secondColor }}</span>
@@ -71,7 +80,7 @@
         <div class="studio-section">
           <div class="section-title-row">
             <span class="bullet cyan-bullet"></span>
-            <h3>Phase 0: Base Dodecahedron</h3>
+            <h3>{{ currentSolid === 'icosahedron' ? 'Phase 0: Base Icosahedron' : 'Phase 0: Base Dodecahedron' }}</h3>
           </div>
           <div class="control-row">
             <label>Core Face Opacity: <span class="val">{{ Math.round(materialConfig.coreOpacity0 * 100) }}%</span></label>
@@ -87,14 +96,14 @@
         <div class="studio-section">
           <div class="section-title-row">
             <span class="bullet magenta-bullet"></span>
-            <h3>Phase 1: Small Stellated Dodecahedron</h3>
+            <h3>{{ currentSolid === 'icosahedron' ? 'Phase 1: Small Triambic Icosahedron' : 'Phase 1: Small Stellated Dodecahedron' }}</h3>
           </div>
           <div class="control-row">
-            <label>Star Points Opacity: <span class="val">{{ Math.round(materialConfig.firstOpacity1 * 100) }}%</span></label>
+            <label>Star/Pyramid Points Opacity: <span class="val">{{ Math.round(materialConfig.firstOpacity1 * 100) }}%</span></label>
             <input type="range" min="0" max="1" step="0.05" v-model.number="materialConfig.firstOpacity1" />
           </div>
           <div class="control-row">
-            <label>Enclosed Dodecahedron Opacity: <span class="val">{{ Math.round(materialConfig.coreOpacity1 * 100) }}%</span></label>
+            <label>Enclosed Core Opacity: <span class="val">{{ Math.round(materialConfig.coreOpacity1 * 100) }}%</span></label>
             <input type="range" min="0" max="1" step="0.05" v-model.number="materialConfig.coreOpacity1" />
           </div>
           <div class="control-row">
@@ -107,10 +116,10 @@
         <div class="studio-section">
           <div class="section-title-row">
             <span class="bullet gold-bullet"></span>
-            <h3>Phase 2: Great Dodecahedron</h3>
+            <h3>{{ currentSolid === 'icosahedron' ? 'Phase 2: Great Icosahedron' : 'Phase 2: Great Dodecahedron' }}</h3>
           </div>
           <div class="control-row">
-            <label>Valley Triangles Opacity: <span class="val">{{ Math.round(materialConfig.secondOpacity2 * 100) }}%</span></label>
+            <label>Valley/Great Faces Opacity: <span class="val">{{ Math.round(materialConfig.secondOpacity2 * 100) }}%</span></label>
             <input type="range" min="0" max="1" step="0.05" v-model.number="materialConfig.secondOpacity2" />
           </div>
           <div class="control-row">
@@ -118,7 +127,7 @@
             <input type="range" min="0" max="1" step="0.05" v-model.number="materialConfig.firstOpacity2" />
           </div>
           <div class="control-row">
-            <label>Enclosed Dodecahedron Opacity: <span class="val">{{ Math.round(materialConfig.coreOpacity2 * 100) }}%</span></label>
+            <label>Enclosed Core Opacity: <span class="val">{{ Math.round(materialConfig.coreOpacity2 * 100) }}%</span></label>
             <input type="range" min="0" max="1" step="0.05" v-model.number="materialConfig.coreOpacity2" />
           </div>
           <div class="control-row">
@@ -139,7 +148,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import DodecahedronViewer from './components/DodecahedronViewer.vue';
+import PolyhedronViewer from './components/PolyhedronViewer.vue';
 import StellationSlider from './components/StellationSlider.vue';
 
 // The main reactive stellation state, ranging from 0.0 to 2.0
@@ -147,6 +156,13 @@ const currentStellation = ref(0);
 
 const onStellationChange = (value: number) => {
   currentStellation.value = value;
+};
+
+// Selected active solid shape
+const currentSolid = ref<'dodecahedron' | 'icosahedron'>('dodecahedron');
+
+const onSolidChange = () => {
+  currentStellation.value = 0; // reset stellation upon solid switch
 };
 
 // Collapsible sidebar state
@@ -597,8 +613,12 @@ body {
     font-size: 1.2rem;
     letter-spacing: 1px;
   }
-  .subtitle {
-    font-size: 0.65rem;
+  .selector-label {
+    font-size: 0.7rem;
+  }
+  .solid-select {
+    padding: 4px 24px 4px 8px;
+    font-size: 0.78rem;
   }
   .btn-studio-toggle {
     top: 16px;
@@ -615,5 +635,70 @@ body {
     top: 80px;
     max-height: calc(100vh - 110px);
   }
+}
+
+/* Glassmorphic Solid Selector in Header */
+.solid-selector-wrapper {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.selector-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.solid-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 32px 6px 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.solid-select:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.solid-select:focus {
+  border-color: #ff007f;
+  box-shadow: 0 0 10px rgba(255, 0, 127, 0.25);
+}
+
+.select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+.solid-select:hover ~ .select-arrow {
+  border-top-color: #ffffff;
 }
 </style>

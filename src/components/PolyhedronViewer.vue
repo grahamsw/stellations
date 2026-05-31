@@ -13,29 +13,19 @@
       <!-- Back Rim Light -->
       <TresDirectionalLight :position="[0, 6, -6]" :intensity="1.5" color="#e6ccff" />
 
-      <!-- LAYER 1: Core Dodecahedron (Cyan) - Rendered 1st -->
+      <!-- LAYER 1: Core Polyhedron (Cyan) - Rendered 1st -->
       <TresGroup :render-order="1">
-        <!-- Solid Faces -->
-        <TresMesh>
+        <!-- Solid Faces (Opaque) -->
+        <TresMesh v-if="liveCoreOpacity >= 1.0">
           <TresBufferGeometry>
             <TresBufferAttribute
               attach="attributes-position"
-              :array="coreFacePositions"
-              :count="180"
+              :array="activeBuffers.coreFace"
+              :count="activeBuffers.coreCount"
               :item-size="3"
             />
           </TresBufferGeometry>
           <TresMeshStandardMaterial
-            v-if="liveCoreOpacity < 1.0"
-            :color="config.coreColor"
-            :roughness="0.1"
-            :metalness="0.9"
-            :transparent="true"
-            :opacity="liveCoreOpacity"
-            :depthWrite="false"
-          />
-          <TresMeshStandardMaterial
-            v-else
             :color="config.coreColor"
             :roughness="0.1"
             :metalness="0.9"
@@ -44,13 +34,32 @@
             :depthWrite="true"
           />
         </TresMesh>
+        <!-- Solid Faces (Transparent) -->
+        <TresMesh v-else>
+          <TresBufferGeometry>
+            <TresBufferAttribute
+              attach="attributes-position"
+              :array="activeBuffers.coreFace"
+              :count="activeBuffers.coreCount"
+              :item-size="3"
+            />
+          </TresBufferGeometry>
+          <TresMeshStandardMaterial
+            :color="config.coreColor"
+            :roughness="0.1"
+            :metalness="0.9"
+            :transparent="true"
+            :opacity="liveCoreOpacity"
+            :depthWrite="false"
+          />
+        </TresMesh>
         <!-- Clean Outer Edges -->
         <TresLineSegments>
           <TresBufferGeometry>
             <TresBufferAttribute
               attach="attributes-position"
-              :array="coreEdgePositions"
-              :count="60"
+              :array="activeBuffers.coreEdge"
+              :count="activeBuffers.coreEdgeCount"
               :item-size="3"
             />
           </TresBufferGeometry>
@@ -62,29 +71,19 @@
         </TresLineSegments>
       </TresGroup>
 
-      <!-- LAYER 2: First Stellation Star Points (Magenta) - Rendered 2nd -->
+      <!-- LAYER 2: First Stellation (Magenta) - Rendered 2nd -->
       <TresGroup v-if="stellation > 0" :render-order="2">
-        <!-- Solid Faces -->
-        <TresMesh>
+        <!-- Solid Faces (Opaque) -->
+        <TresMesh v-if="liveFirstStellOpacity >= 1.0">
           <TresBufferGeometry>
             <TresBufferAttribute
               attach="attributes-position"
-              :array="firstStellFacePositions"
-              :count="180"
+              :array="activeBuffers.firstFace"
+              :count="activeBuffers.firstCount"
               :item-size="3"
             />
           </TresBufferGeometry>
           <TresMeshStandardMaterial
-            v-if="liveFirstStellOpacity < 1.0"
-            :color="config.firstColor"
-            :roughness="0.15"
-            :metalness="0.85"
-            :transparent="true"
-            :opacity="liveFirstStellOpacity"
-            :depthWrite="false"
-          />
-          <TresMeshStandardMaterial
-            v-else
             :color="config.firstColor"
             :roughness="0.15"
             :metalness="0.85"
@@ -93,13 +92,32 @@
             :depthWrite="true"
           />
         </TresMesh>
+        <!-- Solid Faces (Transparent) -->
+        <TresMesh v-else>
+          <TresBufferGeometry>
+            <TresBufferAttribute
+              attach="attributes-position"
+              :array="activeBuffers.firstFace"
+              :count="activeBuffers.firstCount"
+              :item-size="3"
+            />
+          </TresBufferGeometry>
+          <TresMeshStandardMaterial
+            :color="config.firstColor"
+            :roughness="0.15"
+            :metalness="0.85"
+            :transparent="true"
+            :opacity="liveFirstStellOpacity"
+            :depthWrite="false"
+          />
+        </TresMesh>
         <!-- Clean Outer Edges -->
         <TresLineSegments>
           <TresBufferGeometry>
             <TresBufferAttribute
               attach="attributes-position"
-              :array="firstStellEdgePositions"
-              :count="120"
+              :array="activeBuffers.firstEdge"
+              :count="activeBuffers.firstEdgeCount"
               :item-size="3"
             />
           </TresBufferGeometry>
@@ -111,29 +129,19 @@
         </TresLineSegments>
       </TresGroup>
 
-      <!-- LAYER 3: Second Stellation Valley Triangles (Gold) - Rendered 3rd -->
+      <!-- LAYER 3: Second Stellation (Gold) - Rendered 3rd -->
       <TresGroup v-if="stellation > 1.0" :render-order="3">
-        <!-- Solid Faces -->
-        <TresMesh>
+        <!-- Solid Faces (Opaque) -->
+        <TresMesh v-if="liveSecondStellOpacity >= 1.0">
           <TresBufferGeometry>
             <TresBufferAttribute
               attach="attributes-position"
-              :array="secondStellFacePositions"
-              :count="180"
+              :array="activeBuffers.secondFace"
+              :count="activeBuffers.secondCount"
               :item-size="3"
             />
           </TresBufferGeometry>
           <TresMeshStandardMaterial
-            v-if="liveSecondStellOpacity < 1.0"
-            :color="config.secondColor"
-            :roughness="0.15"
-            :metalness="0.85"
-            :transparent="true"
-            :opacity="liveSecondStellOpacity"
-            :depthWrite="false"
-          />
-          <TresMeshStandardMaterial
-            v-else
             :color="config.secondColor"
             :roughness="0.15"
             :metalness="0.85"
@@ -142,13 +150,32 @@
             :depthWrite="true"
           />
         </TresMesh>
+        <!-- Solid Faces (Transparent) -->
+        <TresMesh v-else>
+          <TresBufferGeometry>
+            <TresBufferAttribute
+              attach="attributes-position"
+              :array="activeBuffers.secondFace"
+              :count="activeBuffers.secondCount"
+              :item-size="3"
+            />
+          </TresBufferGeometry>
+          <TresMeshStandardMaterial
+            :color="config.secondColor"
+            :roughness="0.15"
+            :metalness="0.85"
+            :transparent="true"
+            :opacity="liveSecondStellOpacity"
+            :depthWrite="false"
+          />
+        </TresMesh>
         <!-- Clean Outer Edges -->
         <TresLineSegments>
           <TresBufferGeometry>
             <TresBufferAttribute
               attach="attributes-position"
-              :array="secondStellEdgePositions"
-              :count="60"
+              :array="activeBuffers.secondEdge"
+              :count="activeBuffers.secondEdgeCount"
               :item-size="3"
             />
           </TresBufferGeometry>
@@ -167,7 +194,13 @@
 import { computed } from 'vue';
 import { TresCanvas } from '@tresjs/core';
 import { OrbitControls } from '@tresjs/cientos';
-import { dodecahedronVertices, dodecahedronFacesIndices, facesData, adjacentFaces } from '../../dodecahedron';
+import { 
+  dodecahedronVertices, 
+  dodecahedronFacesIndices, 
+  facesData as dodecaFacesData, 
+  adjacentFaces as dodecaAdjacentFaces 
+} from '../../dodecahedron';
+import { getIcosahedronBuffers } from '../../icosahedron';
 
 // Phase-specific Material configuration interface
 interface MaterialConfig {
@@ -194,9 +227,11 @@ interface MaterialConfig {
 
 const props = withDefaults(defineProps<{
   stellation?: number;
+  solidType?: 'dodecahedron' | 'icosahedron';
   config: MaterialConfig;
 }>(), {
-  stellation: 0
+  stellation: 0,
+  solidType: 'dodecahedron'
 });
 
 // Linear interpolation utility
@@ -204,10 +239,8 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 // ----------------------------------------------------
 // DYNAMIC MORPHING CONCENTRIC OPACITIES
-// Interpolates smoothly between phase-specific target values
 // ----------------------------------------------------
 
-// 1. Core Dodecahedron Opacity (Cyan)
 const liveCoreOpacity = computed(() => {
   const s = props.stellation;
   if (props.config.overrideScaling) {
@@ -217,10 +250,8 @@ const liveCoreOpacity = computed(() => {
   }
   
   if (s <= 1.0) {
-    // Interpolate between O_core,0 and O_core,1
     return lerp(props.config.coreOpacity0, props.config.coreOpacity1, s);
   } else {
-    // Interpolate between O_core,1 and O_core,2
     return lerp(props.config.coreOpacity1, props.config.coreOpacity2, s - 1.0);
   }
 });
@@ -233,12 +264,10 @@ const liveCoreEdgeOpacity = computed(() => {
     return props.config.coreEdgeOpacity0 * (props.config.coreOpacity2 / Math.max(props.config.coreOpacity0, 0.01));
   }
   
-  // Scales proportionally with the core face opacity
   const ratio = liveCoreOpacity.value / Math.max(props.config.coreOpacity0, 0.01);
   return props.config.coreEdgeOpacity0 * ratio;
 });
 
-// 2. First Stellation Opacity (Magenta Stars)
 const liveFirstStellOpacity = computed(() => {
   const s = props.stellation;
   if (props.config.overrideScaling) {
@@ -248,10 +277,8 @@ const liveFirstStellOpacity = computed(() => {
   }
   
   if (s <= 1.0) {
-    // Interpolate from 0.0 to O_first,1
     return lerp(0.0, props.config.firstOpacity1, s);
   } else {
-    // Interpolate between O_first,1 and O_first,2
     return lerp(props.config.firstOpacity1, props.config.firstOpacity2, s - 1.0);
   }
 });
@@ -267,13 +294,11 @@ const liveFirstStellEdgeOpacity = computed(() => {
   if (s <= 1.0) {
     return lerp(0.0, props.config.firstEdgeOpacity1, s);
   } else {
-    // Scales proportionally with the star points face opacity
     const ratio = liveFirstStellOpacity.value / Math.max(props.config.firstOpacity1, 0.01);
     return props.config.firstEdgeOpacity1 * ratio;
   }
 });
 
-// 3. Second Stellation Opacity (Gold Valleys)
 const liveSecondStellOpacity = computed(() => {
   const s = props.stellation;
   if (props.config.overrideScaling) {
@@ -284,7 +309,6 @@ const liveSecondStellOpacity = computed(() => {
   if (s <= 1.0) {
     return 0.0;
   } else {
-    // Interpolate from 0.0 to O_second,2
     return lerp(0.0, props.config.secondOpacity2, s - 1.0);
   }
 });
@@ -303,21 +327,20 @@ const liveSecondStellEdgeOpacity = computed(() => {
   }
 });
 
-// Geometric Constants
-const firstFace = facesData[0];
-const faceDistance = firstFace 
-  ? Math.sqrt(firstFace.center.x**2 + firstFace.center.y**2 + firstFace.center.z**2) 
+// ----------------------------------------------------
+// DODECAHEDRON STATIC BUFFERS GENERATION
+// ----------------------------------------------------
+const firstDodecaFace = dodecaFacesData[0];
+const dodecaFaceDistance = firstDodecaFace 
+  ? Math.sqrt(firstDodecaFace.center.x**2 + firstDodecaFace.center.y**2 + firstDodecaFace.center.z**2) 
   : 1.37638;
-const apexDistance = Math.sqrt(5) * faceDistance;
+const dodecaApexDistance = Math.sqrt(5) * dodecaFaceDistance;
 
-// ----------------------------------------------------
-// LAYER 1: Core Dodecahedron Static Buffers
-// ----------------------------------------------------
-const coreFacePositions = (() => {
+const dodecaFacePositions = (() => {
   const pos = new Float32Array(60 * 3 * 3);
   let triCount = 0;
   for (let k = 0; k < 12; k++) {
-    const face = facesData[k] ?? { indices: [], center: { x: 0, y: 0, z: 0 } };
+    const face = dodecaFacesData[k] ?? { indices: [], center: { x: 0, y: 0, z: 0 } };
     const fc = face.center;
     for (let i = 0; i < 5; i++) {
       const v0Idx = face.indices[i] ?? 0;
@@ -340,7 +363,7 @@ const coreFacePositions = (() => {
   return pos;
 })();
 
-const coreEdgePositions = (() => {
+const dodecaEdgePositions = (() => {
   const edgePos = new Float32Array(30 * 2 * 3);
   let edgeIdx = 0;
   const seenEdges = new Set<string>();
@@ -368,26 +391,23 @@ const coreEdgePositions = (() => {
   return edgePos;
 })();
 
-// ----------------------------------------------------
-// LAYER 2: First Stellation Static Buffers (Star Points)
-// ----------------------------------------------------
-const firstStellFacePositions = (() => {
+const dodecaFirstFacePositions = (() => {
   const pos = new Float32Array(60 * 3 * 3);
   let triCount = 0;
   for (let k = 0; k < 12; k++) {
-    const face = facesData[k] ?? { indices: [] };
-    const adj = adjacentFaces[k] ?? [];
+    const face = dodecaFacesData[k] ?? { indices: [] };
+    const adj = dodecaAdjacentFaces[k] ?? [];
     for (let i = 0; i < 5; i++) {
       const v0Idx = face.indices[i] ?? 0;
       const v1Idx = face.indices[(i + 1) % 5] ?? 0;
       const adjFaceIdx = adj[i] ?? 0;
       const v0 = dodecahedronVertices[v0Idx] ?? { x: 0, y: 0, z: 0 };
       const v1 = dodecahedronVertices[v1Idx] ?? { x: 0, y: 0, z: 0 };
-      const adjFace = facesData[adjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
+      const adjFace = dodecaFacesData[adjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
       const adjApex = {
-        x: adjFace.normal.x * apexDistance,
-        y: adjFace.normal.y * apexDistance,
-        z: adjFace.normal.z * apexDistance
+        x: adjFace.normal.x * dodecaApexDistance,
+        y: adjFace.normal.y * dodecaApexDistance,
+        z: adjFace.normal.z * dodecaApexDistance
       };
       
       pos[triCount * 9] = adjApex.x;
@@ -405,23 +425,23 @@ const firstStellFacePositions = (() => {
   return pos;
 })();
 
-const firstStellEdgePositions = (() => {
+const dodecaFirstEdgePositions = (() => {
   const edgePos = new Float32Array(60 * 2 * 3);
   let edgeIdx = 0;
   for (let k = 0; k < 12; k++) {
-    const face = facesData[k] ?? { indices: [] };
-    const adj = adjacentFaces[k] ?? [];
+    const face = dodecaFacesData[k] ?? { indices: [] };
+    const adj = dodecaAdjacentFaces[k] ?? [];
     for (let i = 0; i < 5; i++) {
       const v0Idx = face.indices[i] ?? 0;
       const v1Idx = face.indices[(i + 1) % 5] ?? 0;
       const adjFaceIdx = adj[i] ?? 0;
       const v0 = dodecahedronVertices[v0Idx] ?? { x: 0, y: 0, z: 0 };
       const v1 = dodecahedronVertices[v1Idx] ?? { x: 0, y: 0, z: 0 };
-      const adjFace = facesData[adjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
+      const adjFace = dodecaFacesData[adjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
       const adjApex = {
-        x: adjFace.normal.x * apexDistance,
-        y: adjFace.normal.y * apexDistance,
-        z: adjFace.normal.z * apexDistance
+        x: adjFace.normal.x * dodecaApexDistance,
+        y: adjFace.normal.y * dodecaApexDistance,
+        z: adjFace.normal.z * dodecaApexDistance
       };
       
       edgePos[edgeIdx * 6] = adjApex.x;
@@ -444,31 +464,28 @@ const firstStellEdgePositions = (() => {
   return edgePos;
 })();
 
-// ----------------------------------------------------
-// LAYER 3: Second Stellation Static Buffers (Valleys)
-// ----------------------------------------------------
-const secondStellFacePositions = (() => {
+const dodecaSecondFacePositions = (() => {
   const pos = new Float32Array(60 * 3 * 3);
   let triCount = 0;
   for (let k = 0; k < 12; k++) {
-    const face = facesData[k] ?? { indices: [] };
-    const adj = adjacentFaces[k] ?? [];
+    const face = dodecaFacesData[k] ?? { indices: [] };
+    const adj = dodecaAdjacentFaces[k] ?? [];
     for (let i = 0; i < 5; i++) {
       const vIdx = face.indices[i] ?? 0;
       const adjFaceIdx = adj[i] ?? 0;
       const prevAdjFaceIdx = adj[(i - 1 + 5) % 5] ?? 0;
       const v = dodecahedronVertices[vIdx] ?? { x: 0, y: 0, z: 0 };
-      const adjFace = facesData[adjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
-      const prevAdjFace = facesData[prevAdjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
+      const adjFace = dodecaFacesData[adjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
+      const prevAdjFace = dodecaFacesData[prevAdjFaceIdx] ?? { normal: { x: 0, y: 0, z: 0 } };
       const adjApex = {
-        x: adjFace.normal.x * apexDistance,
-        y: adjFace.normal.y * apexDistance,
-        z: adjFace.normal.z * apexDistance
+        x: adjFace.normal.x * dodecaApexDistance,
+        y: adjFace.normal.y * dodecaApexDistance,
+        z: adjFace.normal.z * dodecaApexDistance
       };
       const prevApex = {
-        x: prevAdjFace.normal.x * apexDistance,
-        y: prevAdjFace.normal.y * apexDistance,
-        z: prevAdjFace.normal.z * apexDistance
+        x: prevAdjFace.normal.x * dodecaApexDistance,
+        y: prevAdjFace.normal.y * dodecaApexDistance,
+        z: prevAdjFace.normal.z * dodecaApexDistance
       };
       
       pos[triCount * 9] = v.x;
@@ -486,17 +503,17 @@ const secondStellFacePositions = (() => {
   return pos;
 })();
 
-const secondStellEdgePositions = (() => {
+const dodecaSecondEdgePositions = (() => {
   const seenOuterEdges = new Set<string>();
   const outerEdgePosList: number[] = [];
   for (let k = 0; k < 12; k++) {
-    const face = facesData[k] ?? { normal: { x: 0, y: 0, z: 0 } };
+    const face = dodecaFacesData[k] ?? { normal: { x: 0, y: 0, z: 0 } };
     const Ak = {
-      x: face.normal.x * apexDistance,
-      y: face.normal.y * apexDistance,
-      z: face.normal.z * apexDistance
+      x: face.normal.x * dodecaApexDistance,
+      y: face.normal.y * dodecaApexDistance,
+      z: face.normal.z * dodecaApexDistance
     };
-    const adj = adjacentFaces[k] ?? [];
+    const adj = dodecaAdjacentFaces[k] ?? [];
     for (let i = 0; i < 5; i++) {
       const j = adj[i] ?? 0;
       const min = Math.min(k, j);
@@ -504,11 +521,11 @@ const secondStellEdgePositions = (() => {
       const key = `${min}-${max}`;
       if (!seenOuterEdges.has(key)) {
         seenOuterEdges.add(key);
-        const adjFace = facesData[j] ?? { normal: { x: 0, y: 0, z: 0 } };
+        const adjFace = dodecaFacesData[j] ?? { normal: { x: 0, y: 0, z: 0 } };
         const Aj = {
-          x: adjFace.normal.x * apexDistance,
-          y: adjFace.normal.y * apexDistance,
-          z: adjFace.normal.z * apexDistance
+          x: adjFace.normal.x * dodecaApexDistance,
+          y: adjFace.normal.y * dodecaApexDistance,
+          z: adjFace.normal.z * dodecaApexDistance
         };
         outerEdgePosList.push(Ak.x, Ak.y, Ak.z, Aj.x, Aj.y, Aj.z);
       }
@@ -516,6 +533,50 @@ const secondStellEdgePositions = (() => {
   }
   return new Float32Array(outerEdgePosList);
 })();
+
+// ----------------------------------------------------
+// ICOSAHEDRON STATIC BUFFERS GENERATION
+// ----------------------------------------------------
+const icosaBuffers = getIcosahedronBuffers();
+
+// ----------------------------------------------------
+// DYNAMIC DUAL SOLID ACTIVE BUFFERS MAPPING
+// ----------------------------------------------------
+const activeBuffers = computed(() => {
+  if (props.solidType === 'icosahedron') {
+    return {
+      coreFace: icosaBuffers.coreFacePositions,
+      coreEdge: icosaBuffers.coreEdgePositions,
+      firstFace: icosaBuffers.firstStellFacePositions,
+      firstEdge: icosaBuffers.firstStellEdgePositions,
+      secondFace: icosaBuffers.secondStellFacePositions,
+      secondEdge: icosaBuffers.secondStellEdgePositions,
+      
+      coreCount: 60,       // 20 faces * 3 vertices = 60 vertices
+      coreEdgeCount: 60,   // 30 edges * 2 vertices = 60 vertices
+      firstCount: 180,     // 20 faces * 3 triangles * 3 vertices = 180 vertices
+      firstEdgeCount: 120, // 20 faces * 3 edges * 2 vertices = 120 vertices
+      secondCount: 60,     // 20 faces * 3 vertices = 60 vertices
+      secondEdgeCount: 60  // 30 edges * 2 vertices = 60 vertices
+    };
+  } else {
+    return {
+      coreFace: dodecaFacePositions,
+      coreEdge: dodecaEdgePositions,
+      firstFace: dodecaFirstFacePositions,
+      firstEdge: dodecaFirstEdgePositions,
+      secondFace: dodecaSecondFacePositions,
+      secondEdge: dodecaSecondEdgePositions,
+      
+      coreCount: 180,      // 12 faces * 5 triangles * 3 vertices = 180 vertices
+      coreEdgeCount: 60,   // 30 edges * 2 vertices = 60 vertices
+      firstCount: 180,     // 12 faces * 5 triangles * 3 vertices = 180 vertices
+      firstEdgeCount: 120, // 60 edges * 2 vertices = 120 vertices
+      secondCount: 180,    // 12 faces * 5 triangles * 3 vertices = 180 vertices
+      secondEdgeCount: 60  // 30 edges * 2 vertices = 60 vertices
+    };
+  }
+});
 </script>
 
 <style scoped>

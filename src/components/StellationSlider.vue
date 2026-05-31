@@ -40,7 +40,7 @@
             @click="jumpTo(0.0)" 
             class="btn-secondary" 
             :class="{ active: stellation === 0.0 }"
-            title="Base Dodecahedron"
+            :title="solidType === 'icosahedron' ? 'Base Icosahedron' : 'Base Dodecahedron'"
           >
             Base
           </button>
@@ -48,7 +48,7 @@
             @click="jumpTo(1.0)" 
             class="btn-secondary" 
             :class="{ active: stellation === 1.0 }"
-            title="Small Stellated Dodecahedron"
+            :title="solidType === 'icosahedron' ? 'Small Triambic Icosahedron' : 'Small Stellated Dodecahedron'"
           >
             1st Stell
           </button>
@@ -56,7 +56,7 @@
             @click="jumpTo(2.0)" 
             class="btn-secondary" 
             :class="{ active: stellation === 2.0 }"
-            title="Great Dodecahedron"
+            :title="solidType === 'icosahedron' ? 'Great Icosahedron' : 'Great Dodecahedron'"
           >
             2nd Stell
           </button>
@@ -108,9 +108,11 @@ onMounted(() => {
 });
 
 const props = withDefaults(defineProps<{
-  stellation?: number
+  stellation?: number;
+  solidType?: 'dodecahedron' | 'icosahedron';
 }>(), {
-  stellation: 0
+  stellation: 0,
+  solidType: 'dodecahedron'
 });
 
 const emit = defineEmits(['stellation-change']);
@@ -227,28 +229,56 @@ onUnmounted(() => {
 // Dynamic Legends based on stellation value
 const phaseTitle = computed(() => {
   const s = props.stellation;
-  if (s === 0.0) return 'Convex Regular Dodecahedron';
-  if (s === 1.0) return 'First Stellation (Small Stellated Dodecahedron)';
-  if (s === 2.0) return 'Second Stellation (Great Dodecahedron)';
-  if (s > 0.0 && s < 1.0) return 'Stellating Dodecahedron...';
-  return 'Morphing to Great Dodecahedron...';
+  const isIco = props.solidType === 'icosahedron';
+  
+  if (isIco) {
+    if (s === 0.0) return 'Convex Regular Icosahedron';
+    if (s === 1.0) return 'First Stellation (Small Triambic Icosahedron)';
+    if (s === 2.0) return 'Second Stellation (Great Icosahedron)';
+    if (s > 0.0 && s < 1.0) return 'Stellating Icosahedron...';
+    return 'Morphing to Great Icosahedron...';
+  } else {
+    if (s === 0.0) return 'Convex Regular Dodecahedron';
+    if (s === 1.0) return 'First Stellation (Small Stellated Dodecahedron)';
+    if (s === 2.0) return 'Second Stellation (Great Dodecahedron)';
+    if (s > 0.0 && s < 1.0) return 'Stellating Dodecahedron...';
+    return 'Morphing to Great Dodecahedron...';
+  }
 });
 
 const phaseDescription = computed(() => {
   const s = props.stellation;
-  if (s === 0.0) {
-    return 'The base Platonic solid featuring 12 flat, congruent regular pentagonal faces, 20 vertices, and 30 edges. Highly symmetric and perfectly convex.';
+  const isIco = props.solidType === 'icosahedron';
+  
+  if (isIco) {
+    if (s === 0.0) {
+      return 'The base Platonic solid composed of 20 equilateral triangular faces, 12 vertices, and 30 edges. The most complex convex regular polyhedron.';
+    }
+    if (s === 1.0) {
+      return 'Small Triambic Icosahedron. The first stellation, formed by augmenting each of the 20 faces of the core icosahedron with a triangular pyramid. Its 32 vertices form a perfect outer dodecahedron layout.';
+    }
+    if (s === 2.0) {
+      return 'Great Icosahedron. A Kepler-Poinsot regular star polyhedron, composed of 20 intersecting large equilateral triangles. It shares its 12 vertices and 30 edges with the regular icosahedron.';
+    }
+    if (s > 0.0 && s < 1.0) {
+      return `Spikes are rising from the 20 triangular faces, growing outward to form the triambic pyramids (${Math.round(s * 100)}% complete).`;
+    }
+    return `Pyramid bases are expanding outward while their apexes remain as intersecting star planes meet to form the Great Icosahedron (${Math.round((s - 1) * 100)}% complete).`;
+  } else {
+    if (s === 0.0) {
+      return 'The base Platonic solid featuring 12 flat, congruent regular pentagonal faces, 20 vertices, and 30 edges. Highly symmetric and perfectly convex.';
+    }
+    if (s === 1.0) {
+      return 'Small Stellated Dodecahedron. Created by extending the faces of the dodecahedron outwards until they meet in 12 pentagonal pyramids. Shares its 12 vertex points with the regular icosahedron.';
+    }
+    if (s === 2.0) {
+      return 'Great Dodecahedron. The second stellation, composed of 12 intersecting regular pentagonal faces. It shares its 12 vertices and 30 edges with the regular icosahedron, creating an intricate interlaced structure.';
+    }
+    if (s > 0.0 && s < 1.0) {
+      return `Pyramids are rising from the 12 pentagonal faces. The centers are expanding outwards to become icosahedral vertices (${Math.round(s * 100)}% complete).`;
+    }
+    return `The original 20 dodecahedron vertices are now expanding outward to the stellation tips while the face centers invert to form intersecting regular pentagons (${Math.round((s - 1) * 100)}% complete).`;
   }
-  if (s === 1.0) {
-    return 'Small Stellated Dodecahedron. Created by extending the faces of the dodecahedron outwards until they meet in 12 pentagonal pyramids. Shares its 12 vertex points with the regular icosahedron.';
-  }
-  if (s === 2.0) {
-    return 'Great Dodecahedron. The second stellation, composed of 12 intersecting regular pentagonal faces. It shares its 12 vertices and 30 edges with the regular icosahedron, creating an intricate interlaced structure.';
-  }
-  if (s > 0.0 && s < 1.0) {
-    return `Pyramids are rising from the 12 pentagonal faces. The centers are expanding outwards to become icosahedral vertices (${Math.round(s * 100)}% complete).`;
-  }
-  return `The original 20 dodecahedron vertices are now expanding outward to the stellation tips while the face centers invert to form intersecting regular pentagons (${Math.round((s - 1) * 100)}% complete).`;
 });
 </script>
 
