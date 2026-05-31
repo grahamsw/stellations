@@ -20,7 +20,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { TresCanvas, OrbitControls } from '@tresjs/core';
+import { TresCanvas } from '@tresjs/core';
+import { OrbitControls } from '@tresjs/cientos';
 import { 
   BoxGeometry, 
   MeshStandardMaterial, 
