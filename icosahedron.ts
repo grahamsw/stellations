@@ -121,10 +121,6 @@ export const greatIcosahedronFacesIndices = [
 ];
 
 // 6. Geometric Apex Constants for Stellation
-const firstFace = facesData[0];
-const faceDistance = firstFace 
-  ? Math.sqrt(firstFace.center.x**2 + firstFace.center.y**2 + firstFace.center.z**2) 
-  : 1.51152;
 // Apex scaling factor is exactly PHI^2 / sqrt(5) * sqrt(3) / d_face ~ 1.342
 export const apexDistance = (Math.pow(PHI, 2) * Math.sqrt(3)) / Math.sqrt(5);
 
@@ -182,7 +178,7 @@ export const getIcosahedronBuffers = () => {
   // Layer 2: First Stellation Pyramids (20 faces * 3 triangles/pyramid * 3 vertices * 3 coords = 540 floats)
   const firstStellFacePositions = new Float32Array(20 * 3 * 3 * 3);
   let firstTriCount = 0;
-  facesData.forEach((face, fIdx) => {
+  facesData.forEach((face) => {
     const v0 = icosahedronVertices[face.indices[0] ?? 0] ?? { x: 0, y: 0, z: 0 };
     const v1 = icosahedronVertices[face.indices[1] ?? 0] ?? { x: 0, y: 0, z: 0 };
     const v2 = icosahedronVertices[face.indices[2] ?? 0] ?? { x: 0, y: 0, z: 0 };
