@@ -2,7 +2,7 @@
   <div class="dodecahedron-viewer">
     <TresCanvas clear-color="transparent" alpha>
       <TresPerspectiveCamera :position="[0, 0, 8.8]" :fov="45" />
-      <OrbitControls :enable-damping="true" :damping-factor="0.05" />
+      <OrbitControls :enable-damping="true" :damping-factor="0.05" :target="[0, 0, 0]" />
       
       <!-- Studio Quality Three-Point Lighting -->
       <TresAmbientLight :intensity="1.2" />
