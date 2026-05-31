@@ -1,10 +1,6 @@
 <template>
   <div class="dodecahedron-viewer">
-    <TresCanvas
-      :camera="{ position: [0, 0, 5], fov: 45 }"
-      class="canvas"
-      window-size
-    >
+    <TresCanvas window-size>
       <ambient-light :intensity="1.5" />
       <directional-light :position="[5, 5, 5]" :intensity="2" />
       <mesh :geometry="geometry" :material="material" />
