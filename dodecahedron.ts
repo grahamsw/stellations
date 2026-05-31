@@ -64,7 +64,7 @@ export interface FaceData {
   normal: Vertex;
 }
 
-export const facesData: FaceData[] = dodecahedronFacesIndices.map((fVerts, k) => {
+export const facesData: FaceData[] = dodecahedronFacesIndices.map((fVerts) => {
   // Compute face center
   const center = { x: 0, y: 0, z: 0 };
   fVerts.forEach(vIdx => {
@@ -158,7 +158,7 @@ export const BASE_DODECAHEDRON: Dodecahedron = {
 export const FIRST_STELLATION = BASE_DODECAHEDRON;
 export const SECOND_STELLATION = BASE_DODECAHEDRON;
 
-export function interpolateStellation(t: number, from: Dodecahedron, to: Dodecahedron): Dodecahedron {
+export function interpolateStellation(_t: number, from: Dodecahedron, _to: Dodecahedron): Dodecahedron {
   return from;
 }
 

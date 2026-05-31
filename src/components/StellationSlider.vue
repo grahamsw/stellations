@@ -1,5 +1,11 @@
 <template>
-  <div class="control-panel">
+  <div class="control-panel" :class="{ collapsed: isCollapsed }">
+    <!-- Collapse Toggle Button (Mobile Only) -->
+    <button class="btn-collapse-toggle" @click="isCollapsed = !isCollapsed" :title="isCollapsed ? 'Expand Panel' : 'Collapse Panel'">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" class="chevron-icon">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
     <!-- Mathematical Phase Description Header -->
     <div class="description-box">
       <h3 class="phase-title">{{ phaseTitle }}</h3>
@@ -91,7 +97,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+const isCollapsed = ref(false);
+
+onMounted(() => {
+  if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+    isCollapsed.value = true;
+  }
+});
 
 const props = withDefaults(defineProps<{
   stellation?: number
@@ -268,11 +282,16 @@ const phaseDescription = computed(() => {
               inset 0 1px 2px rgba(255, 255, 255, 0.15);
 }
 
+.btn-collapse-toggle {
+  display: none;
+}
+
 .description-box {
   display: flex;
   flex-direction: column;
   gap: 6px;
   flex-shrink: 0;
+  height: 110px; /* Keep a constant vertical area for the text to prevent slider shifting and flickering */
 }
 
 .phase-title {
@@ -296,14 +315,14 @@ const phaseDescription = computed(() => {
   display: flex;
   gap: 24px;
   align-items: stretch;
-  height: 220px;
+  height: 180px;
 }
 
 .slider-column {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   width: 45px;
   height: 100%;
 }
@@ -324,17 +343,35 @@ const phaseDescription = computed(() => {
   justify-content: center;
 }
 
+.slider-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 0;
+}
+
 .stellation-slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 6px;
+  width: 100%;
   height: 100%;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   outline: none;
   cursor: pointer;
   writing-mode: vertical-lr;
   direction: ltr;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
 }
 
 .slider-fill {
@@ -387,25 +424,25 @@ const phaseDescription = computed(() => {
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
-  gap: 16px;
+  gap: 10px;
 }
 
 .jump-group-vertical {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 6px;
+  padding: 4px;
 }
 
 .btn-secondary {
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.6);
-  padding: 10px 14px;
-  font-size: 0.78rem;
+  padding: 6px 14px;
+  font-size: 0.75rem;
   font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
@@ -487,7 +524,7 @@ const phaseDescription = computed(() => {
   color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: 10px;
   text-align: center;
   width: 100%;
@@ -513,6 +550,10 @@ const phaseDescription = computed(() => {
     overflow-y: visible;
   }
   
+  .description-box {
+    height: auto;
+  }
+  
   .controller-body {
     flex-direction: column;
     min-height: auto;
@@ -528,15 +569,28 @@ const phaseDescription = computed(() => {
   }
   
   .slider-wrapper {
+    position: relative;
     flex: 1;
     height: 24px;
+  }
+  
+  .slider-wrapper::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 6px;
   }
   
   .stellation-slider {
     writing-mode: horizontal-tb;
     direction: ltr;
     width: 100%;
-    height: 6px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   
   .slider-fill {
@@ -577,6 +631,65 @@ const phaseDescription = computed(() => {
   .indicator-badge {
     flex: 1 0 100%;
     margin-top: 4px;
+  }
+
+  .btn-collapse-toggle {
+    display: flex;
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 15;
+    transition: all 0.25s ease;
+  }
+
+  .btn-collapse-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  .btn-collapse-toggle svg {
+    transition: transform 0.3s ease;
+  }
+
+  /* Collapsed State Overrides on Mobile */
+  .control-panel.collapsed {
+    padding: 10px 16px 8px 16px;
+    gap: 0;
+  }
+
+  .control-panel.collapsed .btn-collapse-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  .control-panel.collapsed .description-box {
+    display: none;
+  }
+
+  .control-panel.collapsed .buttons-column {
+    display: none;
+  }
+
+  .control-panel.collapsed .controller-body {
+    height: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+  }
+
+  .control-panel.collapsed .slider-column {
+    padding-right: 32px; /* Leave room for absolute collapse button */
+    height: auto;
+    margin: 0;
   }
 }
 </style>

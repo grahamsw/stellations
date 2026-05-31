@@ -1,7 +1,7 @@
 <template>
   <div class="dodecahedron-viewer">
     <TresCanvas clear-color="transparent" alpha>
-      <TresPerspectiveCamera :position="[0, 0, 7]" :fov="45" />
+      <TresPerspectiveCamera :position="[0, 0, 8.8]" :fov="45" />
       <OrbitControls :enable-damping="true" :damping-factor="0.05" />
       
       <!-- Studio Quality Three-Point Lighting -->
@@ -167,7 +167,6 @@
 import { computed } from 'vue';
 import { TresCanvas } from '@tresjs/core';
 import { OrbitControls } from '@tresjs/cientos';
-import { DoubleSide } from 'three';
 import { dodecahedronVertices, dodecahedronFacesIndices, facesData, adjacentFaces } from '../../dodecahedron';
 
 // Phase-specific Material configuration interface
