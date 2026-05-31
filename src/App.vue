@@ -25,7 +25,7 @@
 
     <!-- 3D Canvas + Control Dock container -->
     <div class="viewport-container">
-      <PolyhedronViewer :stellation="currentStellation" :solid-type="currentSolid" :config="materialConfig" />
+      <PolyhedronViewer :key="currentSolid" :stellation="currentStellation" :solid-type="currentSolid" :config="materialConfig" />
       <StellationSlider :stellation="currentStellation" :solid-type="currentSolid" @stellation-change="onStellationChange" />
     </div>
 
