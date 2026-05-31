@@ -11,14 +11,15 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@tresjs/cientos": "^5.7.2",
     "@tresjs/core": "^5.8.1",
-    "@tresjs/cientos": "^5.8.1",
     "three": "^0.184.0",
     "vue": "^3.5.32"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.12.2",
+    "@types/three": "^0.184.1",
     "@vitejs/plugin-vue": "^6.0.6",
     "@vue/tsconfig": "^0.9.1",
     "npm-run-all2": "^8.0.4",
