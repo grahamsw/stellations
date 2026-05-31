@@ -5,7 +5,6 @@
       class="canvas"
       window-size
     >
-      <OrbitControls :enable-damping="true" />
       <ambient-light :intensity="1.5" />
       <directional-light :position="[5, 5, 5]" :intensity="2" />
       <mesh :geometry="geometry" :material="material" />
@@ -21,7 +20,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { TresCanvas } from '@tresjs/core';
-import { OrbitControls } from '@tresjs/cientos';
 import { 
   BoxGeometry, 
   MeshStandardMaterial, 
