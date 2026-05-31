@@ -2,8 +2,8 @@
   <div class="dodecahedron-viewer">
     <TresCanvas window-size>
       <OrbitControls />
-      <AmbientLight :intensity="1.5" />
-      <DirectionalLight :position="[5, 5, 5]" :intensity="2" />
+      <ambient-light :intensity="1.5" />
+      <directional-light :position="[5, 5, 5]" :intensity="2" />
       <mesh :geometry="geometry" :material="material" />
       <!-- Fallback placeholder object to verify WebGL is working -->
       <mesh>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { TresCanvas, OrbitControls, AmbientLight, DirectionalLight } from '@tresjs/core';
+import { TresCanvas, OrbitControls } from '@tresjs/core';
 import { 
   BoxGeometry, 
   MeshStandardMaterial, 
