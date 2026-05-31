@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { TresCanvas, OrbitControls } from '@tresjs/core';
 import { 
   SphereGeometry, 
@@ -27,6 +27,7 @@ import {
 const geometry = ref();
 const material = ref();
 
+// This would be replaced with actual dodecahedron geometry in a real implementation
 onMounted(() => {
   geometry.value = new SphereGeometry(1, 32, 32);
   material.value = new MeshStandardMaterial({ 
@@ -34,6 +35,11 @@ onMounted(() => {
     wireframe: true
   });
 });
+
+// In a real implementation, this would update based on stellation state
+// watch(stellationState, (newState) => {
+//   // Update geometry based on new stellation state
+// });
 </script>
 
 <style scoped>
