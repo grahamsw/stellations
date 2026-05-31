@@ -17,10 +17,9 @@ export interface Dodecahedron {
 const PHI = (1 + Math.sqrt(5)) / 2;
 const INV_PHI = 1 / PHI;
 
-// Base regular dodecahedron vertices
+// Base regular dodecahedron vertices and faces
 export const BASE_DODECAHEDRON: Dodecahedron = {
   vertices: [
-    // 0-11: vertices of the base dodecahedron
     { x: 0, y: 1, z: PHI },
     { x: 0, y: -1, z: PHI },
     { x: 0, y: 1, z: -PHI },
@@ -35,7 +34,6 @@ export const BASE_DODECAHEDRON: Dodecahedron = {
     { x: -PHI, y: 0, z: -1 },
   ],
   faces: [
-    // 12 pentagonal faces of the base dodecahedron
     { vertices: [0, 4, 8, 11, 5] },
     { vertices: [0, 5, 9, 1, 4] },
     { vertices: [0, 1, 10, 7, 11] },
@@ -54,7 +52,6 @@ export const BASE_DODECAHEDRON: Dodecahedron = {
 // First stellation (Small Stellated Dodecahedron)
 export const FIRST_STELLATION: Dodecahedron = {
   vertices: [
-    // 12 vertices of the first stellation
     { x: 0, y: 1, z: PHI },
     { x: 0, y: -1, z: PHI },
     { x: 0, y: 1, z: -PHI },
@@ -67,7 +64,6 @@ export const FIRST_STELLATION: Dodecahedron = {
     { x: -PHI, y: 0, z: 1 },
     { x: PHI, y: 0, z: -1 },
     { x: -PHI, y: 0, z: -1 },
-    // Additional vertices for stellation
     { x: 0, y: 0, z: 1 },
     { x: 0, y: 0, z: -1 },
     { x: 1, y: 0, z: 0 },
@@ -76,7 +72,6 @@ export const FIRST_STELLATION: Dodecahedron = {
     { x: 0, y: -1, z: 0 },
   ],
   faces: [
-    // 12 pentagrammic faces of the first stellation
     { vertices: [0, 4, 8, 11, 5] },
     { vertices: [0, 5, 9, 1, 4] },
     { vertices: [0, 1, 10, 7, 11] },
@@ -95,7 +90,6 @@ export const FIRST_STELLATION: Dodecahedron = {
 // Second stellation (Great Dodecahedron)
 export const SECOND_STELLATION: Dodecahedron = {
   vertices: [
-    // 12 vertices of the second stellation
     { x: 0, y: 1, z: PHI },
     { x: 0, y: -1, z: PHI },
     { x: 0, y: 1, z: -PHI },
@@ -108,7 +102,6 @@ export const SECOND_STELLATION: Dodecahedron = {
     { x: -PHI, y: 0, z: 1 },
     { x: PHI, y: 0, z: -1 },
     { x: -PHI, y: 0, z: -1 },
-    // Additional vertices for second stellation
     { x: 0, y: 0, z: 1 },
     { x: 0, y: 0, z: -1 },
     { x: 1, y: 0, z: 0 },
@@ -121,7 +114,6 @@ export const SECOND_STELLATION: Dodecahedron = {
     { x: -1, y: 1, z: -1 },
   ],
   faces: [
-    // 12 pentagonal faces of the second stellation
     { vertices: [0, 4, 8, 11, 5] },
     { vertices: [0, 5, 9, 1, 4] },
     { vertices: [0, 1, 10, 7, 11] },

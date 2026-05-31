@@ -1,47 +1,64 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div class="app">
+    <header>
+      <h1>Dodecahedron Stellations</h1>
+    </header>
+    <div class="content">
+      <DodecahedronViewer />
+      <StellationSlider @stellation-change="onStellationChange" />
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  </div>
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { ref } from 'vue';
+import DodecahedronViewer from './components/DodecahedronViewer.vue';
+import StellationSlider from './components/StellationSlider.vue';
+
+const currentStellation = ref(0);
+
+const onStellationChange = (value: number) => {
+  currentStellation.value = value;
+  // Update 3D model based on stellation value
+};
+</script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+  overflow: hidden;
+}
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 header {
-  line-height: 1.5;
+  padding: 20px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
   }
 }
 </style>
